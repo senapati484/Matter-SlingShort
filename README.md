@@ -17,6 +17,7 @@ This is a simple physics-based slingshot game made using the Matter.js physics e
 ## Project Overview
 
 **Matter-SlingShot** is a browser-based physics simulation project that demonstrates how to create a slingshot mechanism using the Matter.js physics engine. The project involves launching a ball at a stack of polygons to knock them over. The ball can be dragged and released with the mouse to simulate a slingshot. The simulation includes dynamic visuals with random colors for the polygons and consistent colors for the ball.
+**Project Link**: [link](https://slingshort.netlify.app)
 
 ## Features
 
