@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Matter-mouse</title>
+  </head>
+  <body>
+    <script src="matter.min.js"></script>
+    <script>
+            // create an engine
+            var engine = Matter.Engine.create();
+
+            // create a renderer
+            var render = Matter.Render.create({
+              element: document.body,
+              engine: engine,
+              options:{
+                width: 1600,
+                height: 800,
+                wireframe: false
+              }
+            });
+
+            // create two boxes and a ground
+            let ground = Matter.Bodies.rectangle(1200, 500, 300, 20, {
+              isStatic: true,
+            });
+
+            // create mouse
+            let mouse = Matter.Mouse.create(render.canvas);
+            let mouseConstraint = Matter.MouseConstraint.create(engine, {
+              mouse: mouse,
+              constraint: {
+                render: { visible: false },
+              },
+            });
+            render.mouse = mouse;
+
+            // ball
+            let ball = Matter.Bodies.circle(300,600,20);
+            let sling = Matter.Constraint.create({
+              pointA: {x:300, y:600},
+              bodyB: ball,
+              stiffness: 0.05
+            })
+
+            // firing string
+            let firing = false;
+            Matter.Events.on(mouseConstraint, 'enddrag', function(e){
+              if(e.body == ball) firing = true;
+            })
+            Matter.Events.on(engine, 'afterUpdate', function() {
+              if(firing && Math.abs(ball.position.x - 300)<20 && Math.abs(ball.position.y - 600)<20){
+                ball = Matter.Bodies.circle(300,600,20);
+                Matter.World.add(engine.world, ball);
+                sling.bodyB = ball;
+                firing = false;
+              }
+            })
+
+            // stack of polygon for shotting on them
+            let stack = Matter.Composites.stack(1100,270,4,4,0,0, function(x,y){
+              return Matter.Bodies.polygon(x, y, 8, 30);
+            })
+
+            // add all of the bodies to the world
+            Matter.Composite.add(engine.world, [stack, ground, ball, sling, mouseConstraint]);
+
+            // run the renderer
+            Matter.Render.run(render);
+
+            // create runner
+            var runner = Matter.Runner.create();
+
+            // run the engine
+            Matter.Runner.run(runner, engine);
+    </script>
+  </body>
+</html>

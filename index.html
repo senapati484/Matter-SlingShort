@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Matter-Mouse Interaction</title>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <script src="matter.min.js"></script>
+    <script>
+      // Utility function to get a random color
+      function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      // create an engine
+      var engine = Matter.Engine.create();
+
+      // create a renderer
+      var render = Matter.Render.create({
+        element: document.getElementById('canvas-container'),
+        engine: engine,
+        options: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          wireframes: false,
+          background: '#0f0f0f',
+        },
+      });
+
+      // create ground
+      let ground = Matter.Bodies.rectangle(
+        render.options.width * 0.75,
+        render.options.height * 0.75,
+        300,
+        20,
+        {
+          isStatic: true,
+          render: {
+            fillStyle: '#ffffff',
+          },
+        }
+      );
+
+      // create mouse
+      let mouse = Matter.Mouse.create(render.canvas);
+      let mouseConstraint = Matter.MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: {
+          render: { visible: false },
+        },
+      });
+      render.mouse = mouse;
+
+      // ball with a consistent color
+      const ballColor = '#ff6f61'; // consistent color for the ball
+      function createBall(x, y) {
+        return Matter.Bodies.circle(x, y, 20, {
+          render: { fillStyle: ballColor },
+        });
+      }
+
+      // initial ball
+      let ball = createBall(300, 600);
+      let sling = Matter.Constraint.create({
+        pointA: { x: 300, y: 600 },
+        bodyB: ball,
+        stiffness: 0.05,
+        render: {
+          strokeStyle: '#ffffff',
+          lineWidth: 3,
+        },
+      });
+
+      // firing string
+      let firing = false;
+      Matter.Events.on(mouseConstraint, 'enddrag', function (e) {
+        if (e.body === ball) firing = true;
+      });
+
+      Matter.Events.on(engine, 'afterUpdate', function () {
+        if (
+          firing &&
+          Math.abs(ball.position.x - 300) < 20 &&
+          Math.abs(ball.position.y - 600) < 20
+        ) {
+          ball = createBall(300, 600);
+          Matter.World.add(engine.world, ball);
+          sling.bodyB = ball;
+          firing = false;
+        }
+      });
+
+      // stack of polygons with random colors
+      let stack = Matter.Composites.stack(
+        render.options.width * 0.7,
+        render.options.height * 0.35,
+        4,
+        4,
+        0,
+        0,
+        function (x, y) {
+          return Matter.Bodies.polygon(x, y, 8, 30, {
+            render: { fillStyle: getRandomColor() },
+          });
+        }
+      );
+
+      // add all bodies to the world
+      Matter.Composite.add(engine.world, [
+        stack,
+        ground,
+        ball,
+        sling,
+        mouseConstraint,
+      ]);
+
+      // run the renderer
+      Matter.Render.run(render);
+
+      // create runner
+      var runner = Matter.Runner.create();
+
+      // run the engine
+      Matter.Runner.run(runner, engine);
+
+      // Adjust for mobile
+      window.addEventListener('resize', function () {
+        Matter.Render.setPixelRatio(render, window.devicePixelRatio);
+        Matter.Render.lookAt(render, {
+          min: { x: 0, y: 0 },
+          max: { x: window.innerWidth, y: window.innerHeight },
+        });
+        render.canvas.width = window.innerWidth;
+        render.canvas.height = window.innerHeight;
+      });
+    </script>
+  </body>
+</html>
