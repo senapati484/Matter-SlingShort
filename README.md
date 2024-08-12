@@ -57,3 +57,35 @@ To run the project, you need:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/matter-slingshot.git
+
+## Usage
+
+Once you open the project in a web browser:
+
+1. **Interact with the Ball**: Click and drag the ball with your mouse. The ball will follow your mouse movement.
+2. **Release the Ball**: Let go of the mouse button to launch the ball towards the stack of polygons.
+3. **Watch the Simulation**: The ball will interact with the polygons, knocking them over based on the physics simulation.
+4. **Reset and Try Again**: After each launch, a new ball will automatically appear, allowing you to try again.
+
+## Customization
+
+You can customize the project to fit your needs:
+
+- **Change the Ball Color**: Modify the `ballColor` variable in the JavaScript code to change the ball's color.
+- **Modify Polygon Stack**: Change the number of rows, columns, and shape of polygons by adjusting the `Matter.Composites.stack` parameters.
+- **Alter Physics Properties**: Adjust properties like `stiffness`, `restitution`, or `density` of the objects to change how they behave during the simulation.
+
+## Contributing
+
+If you'd like to contribute to the project:
+
+1. **Fork the repository**.
+2. **Create a new branch** for your feature or bugfix.
+3. **Make your changes** and commit them with descriptive messages.
+4. **Push your changes** to your forked repository.
+5. **Submit a pull request** with a detailed explanation of your changes.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
