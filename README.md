@@ -57,6 +57,8 @@ To run the project, you need:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/matter-slingshot.git
+2. **Open the index.html file in your web browser:**:
+   - You can double-click the index.html file or open it through your browser's "Open File" dialog.
 
 ## Usage
 
